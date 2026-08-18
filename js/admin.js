@@ -150,6 +150,7 @@ document.querySelector("#openProductForm").onclick = () => {
   selectedFile = null;
   currentImageUrl = "";
   showImagePreview("");
+  showProductFormMessage("");
   dialog.showModal();
 };
 
@@ -158,6 +159,8 @@ document.querySelector("#closeProductForm").onclick = () => dialog.close();
 // Product, үндсэн variant болон зургийг Supabase-д дарааллаар хадгална.
 document.querySelector("#productForm").onsubmit = async event => {
   event.preventDefault();
+  const saveButton = document.querySelector("#saveProductButton");
+  let saveStep = "барааны үндсэн мэдээлэл";
   const id = document.querySelector("#editProductId").value;
   const productValue = {
     category_id: document.querySelector("#adminCategory").value || null,
@@ -171,6 +174,9 @@ document.querySelector("#productForm").onsubmit = async event => {
   };
 
   try {
+    saveButton.disabled = true;
+    saveButton.textContent = "Хадгалж байна...";
+    showProductFormMessage("");
     showMessage("Барааг хадгалж байна...");
     const query = id
       ? supabase.from("products").update(productValue).eq("id", id).select("id").single()
@@ -178,6 +184,7 @@ document.querySelector("#productForm").onsubmit = async event => {
     const { data: savedProduct, error: productError } = await query;
     if (productError) throw productError;
 
+    saveStep = "размер, өнгө болон үлдэгдэл";
     const variantValue = {
       product_id: savedProduct.id,
       size: document.querySelector("#adminSize").value.trim(),
@@ -193,16 +200,28 @@ document.querySelector("#productForm").onsubmit = async event => {
     const { error: variantError } = await variantQuery;
     if (variantError) throw variantError;
 
+    saveStep = "барааны зураг";
     if (selectedFile) await uploadProductImage(savedProduct.id, selectedFile);
     else if (!currentImageUrl && id) {
-      await supabase.from("product_images").delete().eq("product_id", savedProduct.id);
+      const { error: imageDeleteError } = await supabase
+        .from("product_images")
+        .delete()
+        .eq("product_id", savedProduct.id);
+      if (imageDeleteError) throw imageDeleteError;
     }
 
-    dialog.close();
+    showProductFormMessage("Бараа амжилттай хадгалагдлаа.", true);
     await loadAdminData();
     showMessage("Бараа Supabase-д амжилттай хадгалагдлаа.");
+    setTimeout(() => dialog.close(), 500);
   } catch (error) {
-    showMessage(`Хадгалахад алдаа гарлаа: ${error.message}`);
+    const errorText = `${saveStep} хадгалахад алдаа гарлаа: ${error.message}`;
+    showProductFormMessage(errorText);
+    showMessage(errorText);
+    console.error("Бараа хадгалах алдаа:", error);
+  } finally {
+    saveButton.disabled = false;
+    saveButton.textContent = "Хадгалах";
   }
 };
 
@@ -254,9 +273,19 @@ function openEditForm(product) {
   document.querySelector("#adminProductActive").checked = product.is_active;
   currentImageUrl = productImage(product);
   selectedFile = null;
+  showProductFormMessage("");
   showImagePreview(currentImageUrl);
   document.querySelector("#productFormTitle").textContent = "Бараа засах";
   dialog.showModal();
+}
+
+// Modal дотор хадгалалтын мэдээллийг өнгөтэй, хэрэглэгчид шууд харагдахаар үзүүлнэ.
+function showProductFormMessage(text, success = false) {
+  const message = document.querySelector("#productFormMessage");
+  message.textContent = text;
+  message.className = text
+    ? `product-form-message ${success ? "success" : "visible"}`
+    : "product-form-message";
 }
 
 document.querySelector("#adminSearch").oninput = event => renderProducts(event.target.value);
