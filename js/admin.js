@@ -185,20 +185,7 @@ document.querySelector("#productForm").onsubmit = async event => {
     if (productError) throw productError;
 
     saveStep = "размер, өнгө болон үлдэгдэл";
-    const variantValue = {
-      product_id: savedProduct.id,
-      size: document.querySelector("#adminSize").value.trim(),
-      color: document.querySelector("#adminColor").value.trim(),
-      color_code: document.querySelector("#adminColorCode").value,
-      stock: Number(document.querySelector("#adminStock").value),
-      sku: `${savedProduct.id}-${document.querySelector("#adminSize").value}-${Date.now()}`
-    };
-    const oldVariant = products.find(product => product.id === savedProduct.id)?.variants?.[0];
-    const variantQuery = oldVariant
-      ? supabase.from("product_variants").update(variantValue).eq("id", oldVariant.id)
-      : supabase.from("product_variants").insert(variantValue);
-    const { error: variantError } = await variantQuery;
-    if (variantError) throw variantError;
+    await saveProductVariants(savedProduct.id);
 
     saveStep = "барааны зураг";
     if (selectedFile) await uploadProductImage(savedProduct.id, selectedFile);
@@ -224,6 +211,61 @@ document.querySelector("#productForm").onsubmit = async event => {
     saveButton.textContent = "Хадгалах";
   }
 };
+
+// "S, M, L XL" гэж бичсэн утгыг ["S", "M", "L", "XL"] болгон салгана.
+// Set ашигласнаар ижил размерыг хоёр удаа бичсэн үед давхар variant үүсэхгүй.
+function getEnteredSizes() {
+  const sizeText = document.querySelector("#adminSize").value;
+  return [...new Set(
+    sizeText
+      .split(/[\s,]+/)
+      .map(size => size.trim().toUpperCase())
+      .filter(Boolean)
+  )];
+}
+
+// Size бүрийг product_variants хүснэгтэд бие даасан мөр болгон хадгална.
+async function saveProductVariants(productId) {
+  const sizes = getEnteredSizes();
+  if (!sizes.length) throw new Error("Хамгийн багадаа нэг размер оруулна уу.");
+
+  const color = document.querySelector("#adminColor").value.trim();
+  const colorCode = document.querySelector("#adminColorCode").value;
+  const stock = Number(document.querySelector("#adminStock").value);
+  const existingVariants = products.find(product => product.id === productId)?.variants || [];
+
+  // Өмнөх variant мөрүүдийг дарааллаар нь шинэ size-уудтай тааруулж update хийнэ.
+  for (let index = 0; index < sizes.length; index += 1) {
+    const size = sizes[index];
+    const variantValue = {
+      product_id: productId,
+      size,
+      color,
+      color_code: colorCode,
+      stock,
+      sku: `${productId}-${size}-${color}`
+        .toLowerCase()
+        .replace(/[^a-z0-9-]+/g, "-")
+    };
+
+    const existingVariant = existingVariants[index];
+    const request = existingVariant
+      ? supabase.from("product_variants").update(variantValue).eq("id", existingVariant.id)
+      : supabase.from("product_variants").insert(variantValue);
+    const { error } = await request;
+    if (error) throw error;
+  }
+
+  // Хасагдсан хуучин размер захиалгын түүхтэй байж болох тул устгахгүй, stock-ийг 0 болгоно.
+  const unusedVariantIds = existingVariants.slice(sizes.length).map(variant => variant.id);
+  if (unusedVariantIds.length) {
+    const { error } = await supabase
+      .from("product_variants")
+      .update({ stock: 0 })
+      .in("id", unusedVariantIds);
+    if (error) throw error;
+  }
+}
 
 // Зургийг product-images bucket-д upload хийгээд URL-г product_images-д хадгална.
 async function uploadProductImage(productId, file) {
@@ -344,7 +386,11 @@ function openEditForm(product) {
   document.querySelector("#adminDiscountPrice").value = product.discount_price || "";
   document.querySelector("#adminDescription").value = product.description || "";
   document.querySelector("#adminMaterial").value = product.material || "";
-  document.querySelector("#adminSize").value = variant.size || "M";
+  document.querySelector("#adminSize").value = product.variants
+    ?.filter(item => item.stock > 0)
+    .map(item => item.size)
+    .filter(Boolean)
+    .join(", ") || variant.size || "M";
   document.querySelector("#adminColor").value = variant.color || "Sage green";
   document.querySelector("#adminColorCode").value = variant.color_code || "#66735a";
   document.querySelector("#adminStock").value = variant.stock ?? 1;

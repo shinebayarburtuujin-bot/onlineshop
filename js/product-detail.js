@@ -68,7 +68,13 @@ function renderProduct() {
 function renderVariants() {
   const variants = product.variants || [];
   const colors = [...new Map(variants.map(variant => [variant.color, variant])).values()];
-  const sizes = [...new Set(variants.map(variant => variant.size).filter(Boolean))];
+  // Үлдэгдэлтэй variant бүрийн size-ийг тусдаа сонгох товч болгон харуулна.
+  const sizes = [...new Set(
+    variants
+      .filter(variant => variant.stock > 0)
+      .map(variant => variant.size)
+      .filter(Boolean)
+  )];
 
   document.querySelector(".color-options").innerHTML = colors.map(variant =>
     `<button
