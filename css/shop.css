@@ -16,6 +16,20 @@
 .size-list button.selected{background:var(--sage);border-color:var(--sage);color:#fff}
 .product-image.has-photo{background-size:cover;background-position:center}.product-image.has-photo:before,.product-image.has-photo:after{display:none}
 
+/* Supabase-аас бодит зураг ирсэн үед анхны placeholder хувцасны дүрсийг нууж харуулна. */
+.detail-image.has-photo:after,
+.thumbnails button.has-photo:after{
+  display:none;
+}
+
+/* Том болон жижиг бодит зургуудыг хүрээн дотроо зөв хэмжээгээр байрлуулна. */
+.detail-image.has-photo,
+.thumbnails button.has-photo{
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+
 /* Supabase-аас ирсэн сэтгэгдэл болон шинэ review формын загвар. */
 .review-summary>div{display:grid;gap:14px}
 .review-summary blockquote{padding-block:8px}
