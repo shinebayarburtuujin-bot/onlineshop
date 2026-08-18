@@ -1,6 +1,6 @@
 // Хэрэглэгчийн захиалгуудыг Supabase orders хүснэгтээс бодитоор харуулна.
 import { supabase } from "./supabase.js";
-import { addVariantToCart, money, requireUser } from "./store.js";
+import { addVariantToCart, money, productImage, requireUser } from "./store.js";
 
 const content = document.querySelector(".account-content");
 const filter = document.querySelector("#orderFilter");
@@ -21,7 +21,18 @@ async function loadOrders() {
 
   const { data, error } = await supabase
     .from("orders")
-    .select("*, items:order_items(*)")
+    // Захиалгын variant-аас бүтээгдэхүүн болон зургийг нь хамтад нь уншина.
+    .select(`
+      *,
+      items:order_items(
+        *,
+        variant:product_variants(
+          product:products(
+            images:product_images(*)
+          )
+        )
+      )
+    `)
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -49,13 +60,19 @@ function renderOrders() {
           <span class="status ${order.order_status}">${statusText(order.order_status)}</span>
         </header>
         <div class="order-products">
-          ${(order.items || []).map(item => `<div class="order-product">
-            <span class="order-thumb sage"></span>
+          ${(order.items || []).map(item => {
+            const image = productImage(item.variant?.product);
+            return `<div class="order-product">
+            <span
+              class="order-thumb ${image ? "has-photo" : "sage"}"
+              ${image ? `style="background-image:url('${image}')"` : ""}
+            ></span>
             <div>
               <b>${item.product_name}</b>
               <small>Өнгө: ${item.color || "-"} · Размер: ${item.size || "-"} · ${item.quantity}ш</small>
             </div>
-          </div>`).join("")}
+          </div>`;
+          }).join("")}
         </div>
         <footer class="order-card-actions">
           <button class="outline-button" data-detail="${order.id}">Дэлгэрэнгүй</button>
