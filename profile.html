@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="mn">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Миний профайл — Nomad Wear</title>
+
+    <!-- Вебийн үндсэн фонтуудыг Google Fonts-оос холбоно. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
+      rel="stylesheet"
+    >
+
+    <!-- Вебийн ерөнхий болон хэрэглэгчийн бүртгэлийн загвар. -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/account.css">
+  </head>
+
+  <body>
+    <!-- Хүргэлтийн мэдээллийн талаарх дээд зурвас. -->
+    <div class="announcement">
+      Хүргэлтийн мэдээллээ шинэчилж, захиалгаа хурдан хийгээрэй
+    </div>
+
+    <!-- Вебийн үндсэн толгой болон цэс. -->
+    <header class="site-header">
+      <a class="brand" href="index.html">
+        NOMAD <span>WEAR</span>
+      </a>
+
+      <nav class="main-nav">
+        <a href="index.html#shop">Дэлгүүр</a>
+        <a href="orders.html">Захиалгууд</a>
+        <a class="active" href="profile.html">Профайл</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="icon-link" href="profile.html">♙</a>
+
+        <a class="icon-link cart-link" href="cart.html">
+          ▱
+          <b>2</b>
+        </a>
+      </div>
+    </header>
+
+    <!-- Хэрэглэгчийн профайлын үндсэн хэсэг. -->
+    <main class="account-page">
+      <!-- Orders хуудастай ижил хэрэглэгчийн хажуугийн цэс. -->
+      <aside class="account-sidebar">
+        <div class="profile-mini">
+          <span class="avatar" data-user-initials>Х</span>
+
+          <div>
+            <b data-user-name>Хэрэглэгч</b>
+            <small data-user-email>И-мэйл</small>
+          </div>
+        </div>
+
+        <nav class="account-nav">
+          <a class="active" href="profile.html">
+            <span>○</span>
+            Миний мэдээлэл
+          </a>
+
+          <a href="orders.html">
+            <span>□</span>
+            Захиалгууд
+          </a>
+
+          <a href="#addresses">
+            <span>⌖</span>
+            Хаягууд
+          </a>
+
+          <a class="logout" data-logout href="login.html">
+            <span>↪</span>
+            Гарах
+          </a>
+        </nav>
+      </aside>
+
+      <section class="account-content">
+        <!-- Профайл хуудасны гарчиг. -->
+        <div class="account-heading">
+          <div>
+            <span class="eyebrow">Миний бүртгэл</span>
+            <h1>Хувийн мэдээлэл</h1>
+            <p>Өөрийн нэр, утас болон хүргэлтийн мэдээллээ удирдана.</p>
+          </div>
+        </div>
+
+        <!-- Хэрэглэгчийн нэр, имэйл болон утасны мэдээллийн форм. -->
+        <form class="profile-form" id="profileForm">
+          <div class="form-section-heading">
+            <div>
+              <h2>Үндсэн мэдээлэл</h2>
+              <p>Таны захиалга болон хүргэлтэд ашиглагдана.</p>
+            </div>
+
+            <button class="text-link" id="editProfile" type="button">
+              Засах
+            </button>
+          </div>
+
+          <div class="profile-grid">
+            <label>
+              Овог
+              <input id="profileLastName" type="text">
+            </label>
+
+            <label>
+              Нэр
+              <input id="profileFirstName" type="text">
+            </label>
+
+            <label>
+              И-мэйл
+              <input
+                id="profileEmail"
+                type="email"
+                value=""
+                placeholder="Нэвтэрсэн и-мэйл"
+                disabled
+              >
+              <small>И-мэйлийг Authentication хэсгээс удирдана.</small>
+            </label>
+
+            <label>
+              Утас
+              <input id="profilePhone" type="tel">
+            </label>
+          </div>
+
+          <button class="button primary" type="submit">
+            Өөрчлөлт хадгалах
+          </button>
+
+          <!-- Профайл хадгалсан үр дүн болон алдаа энд харагдана. -->
+          <p id="profileMessage"></p>
+        </form>
+
+        <!-- Хэрэглэгчийн хүргэлтийн хаягийн хэсэг. -->
+        <section class="address-section" id="addresses">
+          <div class="form-section-heading">
+            <div>
+              <h2>Хүргэлтийн хаяг</h2>
+              <p>Checkout хийх үед үндсэн хаяг автоматаар сонгогдоно.</p>
+            </div>
+
+            <button class="outline-button" id="newAddressButton" type="button">
+              + Шинэ хаяг
+            </button>
+          </div>
+
+          <!-- Одоогийн үндсэн хүргэлтийн хаяг. -->
+          <article class="address-card selected-address" id="addressCard">
+            <div class="address-icon">⌖</div>
+
+            <div>
+              <span class="address-label">Үндсэн хаяг</span>
+              <h3>Гэр</h3>
+              <p>
+                Баянзүрх дүүрэг, 13-р хороолол<br>
+                15-р байр, 24 тоот<br>
+                Утас: 99112233
+              </p>
+            </div>
+
+            <div class="address-actions">
+              <button id="editAddress" type="button">Засах</button>
+              <button id="deleteAddress" type="button">Устгах</button>
+            </div>
+          </article>
+
+          <!-- Шинэ хаяг нэмэх болон хуучин хаяг засах форм. -->
+          <form class="address-editor hidden" id="addressForm">
+            <label>
+              Хаягийн нэр
+              <input id="addressName" value="Гэр" required>
+            </label>
+
+            <label>
+              Дэлгэрэнгүй хаяг
+              <textarea id="addressValue" required>Баянзүрх дүүрэг, 13-р хороолол, 15-р байр, 24 тоот</textarea>
+            </label>
+
+            <button class="button primary" type="submit">
+              Хаяг хадгалах
+            </button>
+
+            <button class="outline-button" id="cancelAddress" type="button">
+              Болих
+            </button>
+          </form>
+        </section>
+
+        <!-- Нууц үг болон хамгаалалтын тохиргоо. -->
+        <section class="security-card">
+          <div>
+            <h2>Нууц үг ба хамгаалалт</h2>
+            <p>Нууц үгээ тогтмол шинэчилж бүртгэлээ хамгаалаарай.</p>
+          </div>
+
+          <button class="outline-button" id="changePassword" type="button">
+            Нууц үг солих
+          </button>
+        </section>
+      </section>
+    </main>
+
+    <!-- Профайл болон хүргэлтийн хаягийн ажиллагааг удирдана. -->
+    <script type="module" src="js/profile.js"></script>
+
+    <!-- Нэвтэрсэн хэрэглэгчийн мэдээлэл болон гарах үйлдлийг удирдана. -->
+    <script type="module" src="js/session.js"></script>
+  </body>
+</html>

@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="mn">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Миний захиалгууд — Nomad Wear</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/account.css">
+  </head>
+
+  <body>
+  <!-- Дэлгүүрийн нийтлэг header. -->
+  <div class="announcement">
+    Захиалгын төлөвөө өөрийн бүртгэлээс хянаарай
+  </div>
+
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      NOMAD <span>WEAR</span>
+    </a>
+
+    <nav class="main-nav" aria-label="Үндсэн цэс">
+      <a href="index.html#shop">Дэлгүүр</a>
+      <a class="active" href="orders.html">Захиалгууд</a>
+      <a href="profile.html">Профайл</a>
+    </nav>
+    <div class="header-actions">
+      <a class="icon-link" href="profile.html" aria-label="Профайл">
+        ♙
+      </a>
+
+      <a class="icon-link cart-link" href="cart.html" aria-label="Сагс">
+        ▱
+        <b>2</b>
+      </a>
+    </div>
+  </header>
+
+  <main class="account-page">
+    <!-- Хэрэглэгчийн account хуудсуудын зүүн цэс. -->
+    <aside class="account-sidebar">
+      <div class="profile-mini">
+        <span class="avatar" data-user-initials>Х</span>
+        <div>
+          <b data-user-name>Хэрэглэгч</b>
+          <small data-user-email>И-мэйл</small>
+        </div>
+      </div>
+      <nav class="account-nav">
+        <a href="profile.html">
+          <span>○</span>
+          Миний мэдээлэл
+        </a>
+
+        <a class="active" href="orders.html">
+          <span>□</span>
+          Захиалгууд
+        </a>
+
+        <a href="profile.html#addresses">
+          <span>⌖</span>
+          Хаягууд
+        </a>
+
+        <a class="logout" data-logout href="login.html">
+          <span>↪</span>
+          Гарах
+        </a>
+      </nav>
+    </aside>
+
+    <section class="account-content">
+      <!-- Хуудасны гарчиг болон төлөвийн filter. -->
+      <div class="account-heading">
+        <div>
+          <span class="eyebrow">Миний бүртгэл</span>
+          <h1>Захиалгууд</h1>
+          <p>Өмнөх болон одоогийн захиалгын мэдээллээ эндээс харна.</p>
+        </div>
+
+        <label class="order-filter">
+          Төлөв
+
+          <select id="orderFilter">
+            <option value="all">Бүгд</option>
+            <option value="pending">Хүлээгдэж буй</option>
+            <option value="shipping">Хүргэлтэд гарсан</option>
+            <option value="delivered">Хүргэгдсэн</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Захиалгын жишээ карт 1. -->
+      <article class="order-card" data-status="shipping">
+        <header class="order-card-head">
+          <div>
+            <small>Захиалгын дугаар</small>
+            <b>#ORD-20260818-001</b>
+          </div>
+
+          <div>
+            <small>Захиалсан өдөр</small>
+            <b>2026.08.18</b>
+          </div>
+
+          <div>
+            <small>Нийт төлбөр</small>
+            <b>198,000₮</b>
+          </div>
+
+          <span class="status shipping">Хүргэлтэд гарсан</span>
+        </header>
+        <div class="order-products">
+          <div class="order-product">
+            <span class="order-thumb sage"></span>
+
+            <div>
+              <b>Classic Sage Hoodie</b>
+              <small>Өнгө: Sage · Размер: M · 1ш</small>
+            </div>
+          </div>
+
+          <div class="order-product">
+            <span class="order-thumb cream"></span>
+
+            <div>
+              <b>Essential Cotton Tee</b>
+              <small>Өнгө: Cream · Размер: S · 1ш</small>
+            </div>
+          </div>
+        </div>
+        <!-- Захиалгын явцын timeline. -->
+        <div class="order-progress">
+          <div class="done">
+            <i>✓</i>
+            <span>Баталгаажсан</span>
+          </div>
+
+          <div class="done">
+            <i>✓</i>
+            <span>Бэлтгэгдсэн</span>
+          </div>
+
+          <div class="current">
+            <i>3</i>
+            <span>Хүргэлтэд</span>
+          </div>
+
+          <div>
+            <i>4</i>
+            <span>Хүргэгдсэн</span>
+          </div>
+        </div>
+
+        <footer class="order-card-actions">
+          <button class="outline-button" data-detail>
+            Дэлгэрэнгүй
+          </button>
+
+          <button class="text-link" data-track>
+            Хүргэлт хянах →
+          </button>
+        </footer>
+      </article>
+
+      <!-- Захиалгын жишээ карт 2. -->
+      <article class="order-card compact" data-status="delivered">
+        <header class="order-card-head">
+          <div>
+            <small>Захиалгын дугаар</small>
+            <b>#ORD-20260802-004</b>
+          </div>
+
+          <div>
+            <small>Захиалсан өдөр</small>
+            <b>2026.08.02</b>
+          </div>
+
+          <div>
+            <small>Нийт төлбөр</small>
+            <b>119,000₮</b>
+          </div>
+
+          <span class="status delivered">Хүргэгдсэн</span>
+        </header>
+        <div class="order-products">
+          <div class="order-product">
+            <span class="order-thumb sand"></span>
+
+            <div>
+              <b>Relaxed Chino Pants</b>
+              <small>Өнгө: Sand · Размер: L · 1ш</small>
+            </div>
+          </div>
+        </div>
+
+        <footer class="order-card-actions">
+          <button class="outline-button" data-detail>
+            Дэлгэрэнгүй
+          </button>
+
+          <button class="text-link" data-reorder>
+            Дахин захиалах →
+          </button>
+        </footer>
+      </article>
+    </section>
+  </main>
+  <!-- Захиалгын товч болон шүүлтүүрийг ажиллуулах JavaScript. -->
+  <script type="module" src="js/orders.js"></script>
+
+  <!-- Нэвтэрсэн хэрэглэгчийн мэдээлэл болон гарах үйлдлийг удирдана. -->
+  <script type="module" src="js/session.js"></script>
+  </body>
+</html>

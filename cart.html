@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="mn">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Миний сагс — Nomad Wear</title>
+
+    <!-- Вебийн үндсэн фонтуудыг Google Fonts-оос холбоно. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
+      rel="stylesheet"
+    >
+
+    <!-- Вебийн ерөнхий болон сагсны хуудасны загвар. -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cart.css">
+  </head>
+
+  <body>
+    <!-- Хүргэлтийн мэдээлэл харуулах дээд зурвас. -->
+    <div class="announcement">
+      Таны захиалгыг Улаанбаатар хотод 24–48 цагт хүргэнэ
+    </div>
+
+    <!-- Вебийн үндсэн толгой болон цэс. -->
+    <header class="site-header">
+      <a class="brand" href="index.html">
+        NOMAD <span>WEAR</span>
+      </a>
+
+      <nav class="main-nav">
+        <a href="index.html#shop">Дэлгүүр</a>
+        <a href="orders.html">Захиалгууд</a>
+      </nav>
+
+      <div class="header-actions">
+        <!-- Хэрэглэгчийн профайл хуудас руу шилжинэ. -->
+        <a class="profile-link" href="profile.html">
+          <span>♙</span>
+          <b>Профайл</b>
+        </a>
+
+        <!-- Сагсны дүрс болон сагсанд байгаа барааны тоо. -->
+        <a class="icon-link cart-link" href="cart.html">
+          ▱
+          <b id="cartCount">0</b>
+        </a>
+      </div>
+    </header>
+
+    <!-- Сагсны үндсэн хэсэг. -->
+    <main class="cart-page">
+      <h1>Таны сагс</h1>
+
+      <div class="cart-layout">
+        <!-- Сагсанд нэмсэн бараануудын жагсаалт. -->
+        <section>
+          <div class="cart-head">
+            <span>Бараа</span>
+            <span>Үнэ</span>
+            <span>Тоо</span>
+            <span>Нийт</span>
+          </div>
+
+          <!-- cart.js файлаас бараануудыг энэ хэсэгт оруулна. -->
+          <div id="cartItems"></div>
+
+          <a class="continue" href="index.html#shop">
+            ← Дэлгүүр рүү буцах
+          </a>
+        </section>
+
+        <!-- Сагсны төлбөрийн хураангуй. -->
+        <aside class="summary">
+          <h2>Төлбөрийн мэдээлэл</h2>
+
+          <p>
+            <span>Барааны дүн</span>
+            <b id="subtotal">0₮</b>
+          </p>
+
+          <p>
+            <span>Хүргэлт</span>
+            <b id="shipping">0₮</b>
+          </p>
+
+          <p class="summary-total">
+            <span>Нийт</span>
+            <b id="total">0₮</b>
+          </p>
+
+          <a class="button primary" href="checkout.html">
+            Захиалга үргэлжлүүлэх
+          </a>
+
+          <small>🔒 Таны мэдээлэл хамгаалагдсан</small>
+        </aside>
+      </div>
+    </main>
+
+    <!-- Сагсны бараа болон үнийн тооцооллыг удирдах JavaScript файл. -->
+    <script type="module" src="js/cart.js"></script>
+  </body>
+</html>

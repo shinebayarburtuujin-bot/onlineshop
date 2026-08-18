@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="mn">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nomad Wear — Хувцасны онлайн дэлгүүр</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/shop.css">
+  </head>
+
+  <body>
+  <!-- Дэлгүүрийн урамшуулал болон хүргэлтийн мэдээлэл. -->
+  <div class="announcement">
+    Шинэ хэрэглэгчийн эхний захиалгад 10% хямдрал · 150,000₮-с дээш үнэгүй хүргэлт
+  </div>
+
+  <!-- Вебийн үндсэн толгой болон цэс. -->
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      NOMAD <span>WEAR</span>
+    </a>
+
+    <nav class="main-nav" aria-label="Үндсэн цэс">
+      <a class="active" href="#shop">Дэлгүүр</a>
+      <a href="#shop" data-nav-filter="Эмэгтэй">Эмэгтэй</a>
+      <a href="#shop" data-nav-filter="Эрэгтэй">Эрэгтэй</a>
+      <a href="#shop" data-nav-filter="new">Шинэ</a>
+      <a class="sale" href="#shop" data-nav-filter="sale">Хямдрал</a>
+    </nav>
+    <div class="header-actions">
+      <label class="search">
+        <span>⌕</span>
+        <input id="searchInput" type="search" placeholder="Бараа хайх...">
+      </label>
+
+      <a class="profile-link" href="profile.html" aria-label="Профайл">
+        <span>♙</span>
+        <b>Профайл</b>
+      </a>
+
+      <a class="icon-link cart-link" href="cart.html" aria-label="Сагс">
+        ▱
+        <b id="cartCount">0</b>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Нүүр хуудасны танилцуулга хэсэг. -->
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">2026 · Намрын шинэ загвар</span>
+        <h1>
+          Өдөр бүрийн<br>
+          энгийн гоёл
+        </h1>
+        <p>Тав тух, минимал хийц, байгалийн өнгийг нэгтгэсэн шинэ коллекц.</p>
+        <a class="button primary" href="#shop">
+          Одоо үзэх <span>→</span>
+        </a>
+      </div>
+      <div class="hero-art" aria-label="Шинэ коллекц">
+        <div class="shape shape-one"></div>
+        <div class="shape shape-two"></div>
+
+        <div class="model-card model-a">
+          <span>NEW</span>
+        </div>
+
+        <div class="model-card model-b"></div>
+      </div>
+    </section>
+
+    <!-- Барааны ангиллыг хурдан сонгох товчнууд. -->
+    <section class="category-strip" aria-label="Ангиллууд">
+      <button class="category active" data-category="all">
+        <span class="category-image hoodie"></span>
+        <b>All</b>
+      </button>
+
+      <button class="category" data-category="T-Shirt">
+        <span class="category-image tshirt"></span>
+        <b>T-Shirt</b>
+      </button>
+
+      <button class="category" data-category="Hoodie">
+        <span class="category-image hoodie"></span>
+        <b>Hoodie</b>
+      </button>
+
+      <button class="category" data-category="Pants">
+        <span class="category-image pants"></span>
+        <b>Pants</b>
+      </button>
+
+      <button class="category" data-category="Jacket">
+        <span class="category-image jacket"></span>
+        <b>Jacket</b>
+      </button>
+
+      <button class="category" data-category="Accessories">
+        <span class="category-image cap"></span>
+        <b>Accessories</b>
+      </button>
+    </section>
+
+    <!-- Дэлгүүрийн давуу талууд. -->
+    <section class="benefits">
+      <div>
+        <!-- Даавуу болон чанартай материалыг илэрхийлэх дүрс. -->
+        <span class="benefit-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M8 3 4 5l-2 5 4 2 1-3v12h10V9l1 3 4-2-2-5-4-2c-.7 1.3-2.2 2-4 2S8.7 4.3 8 3Z"></path>
+            <path d="M9 3c.4 1.2 1.4 2 3 2s2.6-.8 3-2"></path>
+          </svg>
+        </span>
+        <p>
+          <b>Чанартай материал</b>
+          <small>Өдөр тутмын тав тух</small>
+        </p>
+      </div>
+
+      <div>
+        <!-- Үнэгүй хүргэлтийг илэрхийлэх ачааны машины дүрс. -->
+        <span class="benefit-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 6h11v11H3Z"></path>
+            <path d="M14 10h4l3 3v4h-7Z"></path>
+            <circle cx="7" cy="18" r="2"></circle>
+            <circle cx="18" cy="18" r="2"></circle>
+          </svg>
+        </span>
+        <p>
+          <b>Үнэгүй хүргэлт</b>
+          <small>150,000₮-с дээш</small>
+        </p>
+      </div>
+
+      <div>
+        <!-- Бараа буцаах үйлдлийг илэрхийлэх эргэх сумны дүрс. -->
+        <span class="benefit-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 9V4l4 4"></path>
+            <path d="M5.5 8A8 8 0 1 1 4 14"></path>
+          </svg>
+        </span>
+        <p>
+          <b>Хялбар буцаалт</b>
+          <small>14 хоногийн дотор</small>
+        </p>
+      </div>
+    </section>
+
+    <section class="shop-section" id="shop">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">Сонгосон загварууд</span>
+          <h2>Шинэ бараа</h2>
+        </div>
+
+        <button class="filter-button" id="filterButton">
+          Шүүлтүүр ☷
+        </button>
+      </div>
+
+      <div class="shop-layout">
+        <aside class="filters" id="filters">
+          <!-- Барааны ангиллын шүүлтүүр. -->
+          <div class="filter-group">
+            <h3>Category</h3>
+
+            <label>
+              <input type="radio" name="filterCategory" value="all" checked>
+              All
+            </label>
+
+            <label>
+              <input type="radio" name="filterCategory" value="T-Shirt">
+              T-Shirt
+            </label>
+
+            <label>
+              <input type="radio" name="filterCategory" value="Hoodie">
+              Hoodie
+            </label>
+
+            <label>
+              <input type="radio" name="filterCategory" value="Pants">
+              Pants
+            </label>
+
+            <label>
+              <input type="radio" name="filterCategory" value="Jacket">
+              Jacket
+            </label>
+          </div>
+
+          <!-- Хувцасны размерын сонголт. -->
+          <div class="filter-group">
+            <h3>Размер</h3>
+
+            <div class="size-list">
+              <button>XS</button>
+              <button>S</button>
+              <button>M</button>
+              <button>L</button>
+              <button>XL</button>
+            </div>
+          </div>
+
+          <!-- Бараануудыг үнээр эрэмбэлэх сонголт. -->
+          <div class="filter-group">
+            <h3>Үнэ</h3>
+
+            <select id="sortSelect">
+              <option value="featured">Онцлох</option>
+              <option value="low">Үнэ: багаас их</option>
+              <option value="high">Үнэ: ихээс бага</option>
+            </select>
+          </div>
+        </aside>
+        <div>
+          <p class="result-count"><span id="resultCount">8</span> бараа</p>
+
+          <!-- Supabase-аас ирэх бодит барааны картууд энэ хэсэгт зурагдана. -->
+          <div class="product-grid" id="productGrid">
+            <div class="empty-state">Бараануудыг уншиж байна...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Мэдээллийн имэйл жагсаалтад бүртгүүлэх хэсэг. -->
+    <section class="newsletter">
+      <span class="eyebrow">Шинэ мэдээ</span>
+      <h2>Коллекц, хямдралын мэдээллийг түрүүлж аваарай.</h2>
+
+      <form id="newsletterForm">
+        <input type="email" required placeholder="И-мэйл хаяг">
+
+        <button class="button primary" type="submit">
+          Бүртгүүлэх
+        </button>
+      </form>
+
+      <p id="newsletterMessage" class="newsletter-message"></p>
+    </section>
+  </main>
+
+  <!-- Вебийн хөл хэсэг. -->
+  <footer>
+    <a class="brand" href="index.html">
+      NOMAD <span>WEAR</span>
+    </a>
+
+    <p>Өдөр бүрийн энгийн гоёл.</p>
+    <p>© 2026 Nomad Wear</p>
+  </footer>
+
+  <!-- Нүүр хуудасны хайлт, filter, sort, сагсны товчны JavaScript. -->
+  <script type="module" src="js/products.js"></script>
+  </body>
+</html>

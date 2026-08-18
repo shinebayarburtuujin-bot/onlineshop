@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="mn">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Захиалга — Nomad Wear</title>
+
+    <!-- Вебийн үндсэн фонтуудыг Google Fonts-оос холбоно. -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
+      rel="stylesheet"
+    >
+
+    <!-- Вебийн ерөнхий болон сагс, захиалгын загвар. -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cart.css">
+  </head>
+
+  <body>
+    <!-- Дээд цэс. -->
+    <header class="site-header">
+      <a class="brand" href="index.html">
+        NOMAD <span>WEAR</span>
+      </a>
+
+      <nav class="main-nav">
+        <a href="cart.html">← Сагс руу буцах</a>
+      </nav>
+    </header>
+
+    <!-- Захиалга баталгаажуулах үндсэн хэсэг. -->
+    <main class="checkout-page">
+      <section>
+        <span class="eyebrow">Сүүлийн алхам</span>
+        <h1>Захиалга баталгаажуулах</h1>
+
+        <!-- Хүргэлт болон төлбөрийн мэдээлэл авах форм. -->
+        <form id="checkoutForm" class="checkout-form">
+          <h2>Хүргэлтийн мэдээлэл</h2>
+
+          <div class="form-grid">
+            <label>
+              Овог нэр
+              <input id="checkoutName" required>
+            </label>
+
+            <label>
+              Утас
+              <input id="checkoutPhone" required>
+            </label>
+
+            <label class="full">
+              Хаяг
+              <textarea id="checkoutAddress" required></textarea>
+            </label>
+          </div>
+
+          <h2>Төлбөрийн хэлбэр</h2>
+
+          <label class="payment">
+            <input type="radio" name="payment" value="qpay" checked>
+            QPay
+          </label>
+
+          <label class="payment">
+            <input type="radio" name="payment" value="cash">
+            Хүргэлтээр бэлэн төлөх
+          </label>
+
+          <button class="button primary" type="submit">
+            Захиалга баталгаажуулах
+          </button>
+
+          <!-- Захиалгын үр дүн болон алдааны мэдээлэл энд гарна. -->
+          <p id="checkoutMessage"></p>
+        </form>
+      </section>
+
+      <!-- Сагсанд байгаа бараанууд болон нийт үнийн хураангуй. -->
+      <aside class="summary">
+        <h2>Таны захиалга</h2>
+
+        <div id="checkoutItems"></div>
+
+        <p class="summary-total">
+          <span>Нийт</span>
+          <b id="checkoutTotal">0₮</b>
+        </p>
+      </aside>
+    </main>
+
+    <!-- Захиалгын хуудасны ажиллагааг удирдах JavaScript файл. -->
+    <script type="module" src="js/checkout.js"></script>
+  </body>
+</html>

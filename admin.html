@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="mn">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Админ — Nomad Wear</title>
+
+    <!-- Вебийн үндсэн фонтуудыг Google Fonts-оос холбоно. -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
+      rel="stylesheet"
+    >
+
+    <!-- Вебийн ерөнхий болон админ хуудасны загвар. -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+  </head>
+
+  <body class="admin-body">
+    <!-- Админ хэсгийн зүүн талын цэс. -->
+    <aside class="admin-sidebar">
+      <a class="brand" href="index.html">
+        NOMAD <span>WEAR</span>
+      </a>
+
+      <nav>
+        <button class="active" data-admin-tab="dashboard">
+          ▦ Хяналтын самбар
+        </button>
+
+        <button data-admin-tab="products">
+          ◇ Бараанууд
+        </button>
+
+        <button data-admin-tab="orders">
+          □ Захиалгууд
+        </button>
+
+        <a href="index.html">← Дэлгүүр рүү буцах</a>
+      </nav>
+    </aside>
+
+    <!-- Админ хуудасны үндсэн агуулга. -->
+    <main class="admin-main">
+      <header class="admin-header">
+        <div>
+          <span class="eyebrow">Удирдлагын хэсэг</span>
+          <h1 id="adminTitle">Хяналтын самбар</h1>
+        </div>
+
+        <button class="button primary" id="openProductForm">
+          + Шинэ бараа
+        </button>
+      </header>
+
+      <!-- Амжилттай болон алдааны мэдээлэл харуулах хэсэг. -->
+      <p class="admin-message" id="adminMessage"></p>
+
+      <!-- Хяналтын самбарын хэсэг. -->
+      <section class="admin-panel active" id="dashboardPanel">
+        <div class="stat-grid">
+          <article>
+            <small>Нийт бараа</small>
+            <b id="productStat">0</b>
+            <span>Идэвхтэй бараа</span>
+          </article>
+
+          <article>
+            <small>Нийт захиалга</small>
+            <b id="orderStat">0</b>
+            <span>Бүх хугацаанд</span>
+          </article>
+
+          <article>
+            <small>Нийт орлого</small>
+            <b id="revenueStat">0₮</b>
+            <span>Баталгаажсан захиалга</span>
+          </article>
+
+          <article>
+            <small>Үлдэгдэл бага</small>
+            <b id="stockStat">0</b>
+            <span>5-аас бага үлдэгдэл</span>
+          </article>
+        </div>
+
+        <div class="admin-card">
+          <h2>Сүүлийн захиалгууд</h2>
+
+          <!-- Сүүлийн захиалгуудыг JavaScript энэ хэсэгт оруулна. -->
+          <div id="recentOrders"></div>
+        </div>
+      </section>
+
+      <!-- Бараа нэмэх, харах, засах, устгах хэсэг. -->
+      <section class="admin-panel" id="productsPanel">
+        <div class="admin-card">
+          <div class="table-toolbar">
+            <h2>Бараанууд</h2>
+
+            <input
+              id="adminSearch"
+              type="search"
+              placeholder="Бараа хайх..."
+            >
+          </div>
+
+          <div class="admin-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Бараа</th>
+                  <th>Category</th>
+                  <th>Үнэ</th>
+                  <th>Төлөв</th>
+                  <th></th>
+                </tr>
+              </thead>
+
+              <!-- Барааны мөрүүдийг JavaScript энэ хэсэгт оруулна. -->
+              <tbody id="adminProducts"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Захиалгын удирдлагын хэсэг. -->
+      <section class="admin-panel" id="ordersPanel">
+        <div class="admin-card">
+          <h2>Захиалгын удирдлага</h2>
+
+          <div class="admin-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Дугаар</th>
+                  <th>Огноо</th>
+                  <th>Нийт</th>
+                  <th>Төлөв</th>
+                </tr>
+              </thead>
+
+              <!-- Захиалгын мөрүүдийг JavaScript энэ хэсэгт оруулна. -->
+              <tbody id="adminOrders"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Шинэ бараа нэмэх болон өмнөх барааг засах цонх. -->
+    <dialog id="productDialog">
+      <form id="productForm" method="dialog">
+        <div class="modal-head">
+          <h2 id="productFormTitle">Шинэ бараа</h2>
+
+          <button type="button" id="closeProductForm">×</button>
+        </div>
+
+        <!-- Засаж байгаа барааны ID-г түр хадгална. -->
+        <input id="editProductId" type="hidden">
+
+        <!-- Админ компьютерээсээ барааны зураг сонгох хэсэг. -->
+        <div class="image-upload">
+          <div class="admin-image-preview" id="adminImagePreview">
+            <span>Зураг сонгоогүй</span>
+          </div>
+
+          <div>
+            <label class="upload-button" for="adminProductImage">
+              Зураг сонгох / солих
+            </label>
+
+            <input
+              id="adminProductImage"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+            >
+
+            <button
+              class="remove-image"
+              id="removeProductImage"
+              type="button"
+            >
+              Зураг устгах
+            </button>
+
+            <small>JPG, PNG эсвэл WEBP · 2MB хүртэл</small>
+          </div>
+        </div>
+
+        <label>
+          Барааны нэр
+          <input id="adminProductName" required>
+        </label>
+
+        <div class="modal-grid">
+          <label>
+            Ангилал
+            <select id="adminCategory" required></select>
+          </label>
+
+          <label>
+            Хүйс
+            <select id="adminGender">
+              <option value="Эмэгтэй">Эмэгтэй</option>
+              <option value="Эрэгтэй">Эрэгтэй</option>
+              <option value="Unisex">Unisex</option>
+            </select>
+          </label>
+
+          <label>
+            Үнэ
+            <input id="adminProductPrice" type="number" min="0" required>
+          </label>
+
+          <label>
+            Хямдарсан үнэ
+            <input id="adminDiscountPrice" type="number" min="0">
+          </label>
+        </div>
+
+        <label>
+          Тайлбар
+          <textarea id="adminDescription"></textarea>
+        </label>
+
+        <label>
+          Материал
+          <input id="adminMaterial" type="text">
+        </label>
+
+        <!-- Барааг сагсанд нэмэхэд хэрэгтэй үндсэн хувилбар. -->
+        <div class="modal-grid">
+          <label>
+            Үндсэн размер
+            <input id="adminSize" type="text" value="M" required>
+          </label>
+
+          <label>
+            Өнгөний нэр
+            <input id="adminColor" type="text" value="Sage green" required>
+          </label>
+
+          <label>
+            Өнгөний код
+            <input id="adminColorCode" type="color" value="#66735a">
+          </label>
+
+          <label>
+            Үлдэгдэл
+            <input id="adminStock" type="number" min="0" value="1" required>
+          </label>
+        </div>
+
+        <label class="check-row">
+          <input id="adminProductActive" type="checkbox" checked>
+          Борлуулалтад идэвхтэй
+        </label>
+
+        <button class="button primary" type="submit">
+          Хадгалах
+        </button>
+      </form>
+    </dialog>
+
+    <!-- Админ хуудасны ажиллагааг удирдах JavaScript файл. -->
+    <script type="module" src="js/admin.js"></script>
+  </body>
+</html>

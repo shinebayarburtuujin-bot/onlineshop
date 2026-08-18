@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Нэвтрэх — Nomad Wear</title>
+
+  <!-- Нүүр хуудастай ижил Google font ашиглана. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+  <main class="auth-page">
+    <!-- Дээд талын лого болон нүүр хуудас руу буцах холбоос. -->
+    <div class="auth-topbar">
+      <a class="brand" href="index.html">NOMAD <span>WEAR</span></a>
+      <a class="back-home" href="index.html">← Нүүр хуудас</a>
+    </div>
+
+    <section class="auth-card">
+      <!-- Зүүн талын брэндийн визуал хэсэг. -->
+      <div class="auth-visual">
+        <div class="visual-circle"></div>
+        <div class="visual-model"><span>NEW</span></div>
+        <div class="visual-content">
+          <span class="eyebrow">Nomad community</span>
+          <h2>Өөрийн хэв маягийг<br>өөрөөрөө бүтээ.</h2>
+          <p>Шинэ коллекц, онцгой хямдрал болон захиалгын мэдээллээ нэг дороос аваарай.</p>
+          <div class="visual-benefits">
+            <span>✓ Захиалгын түүх</span>
+            <span>✓ Хурдан checkout</span>
+            <span>✓ Хадгалсан хаяг</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Баруун талын нэвтрэх/бүртгүүлэх форм. -->
+      <div class="auth-form-panel">
+        <div class="auth-heading">
+          <span class="eyebrow">Тавтай морил</span>
+          <h1 id="authTitle">Нэвтрэх</h1>
+          <p>Өөрийн бүртгэлээр үргэлжлүүлнэ үү.</p>
+        </div>
+
+        <form id="authForm">
+          <label>
+            И-мэйл хаяг
+            <span class="input-wrap">
+              <span class="input-icon">@</span>
+              <input id="email" type="email" required placeholder="name@example.com">
+            </span>
+          </label>
+
+          <label>
+            Нууц үг
+            <span class="input-wrap">
+              <span class="input-icon">⌑</span>
+              <input id="password" type="password" minlength="6" required placeholder="6-аас дээш тэмдэгт">
+              <button class="show-password" id="showPassword" type="button" aria-label="Нууц үг харуулах">Харах</button>
+            </span>
+          </label>
+
+          <!-- Зөвхөн бүртгүүлэх горимд харагдах нэрийн талбар. -->
+          <label class="signup-only hidden">
+            Бүтэн нэр
+            <span class="input-wrap">
+              <span class="input-icon">○</span>
+              <input id="fullName" type="text" placeholder="Таны бүтэн нэр">
+            </span>
+          </label>
+
+          <div class="form-options">
+            <label class="remember"><input type="checkbox"> Намайг сана</label>
+            <button class="forgot-button" id="forgotPassword" type="button">Нууц үгээ мартсан?</button>
+          </div>
+
+          <button class="button primary auth-submit" type="submit" id="submitButton">Нэвтрэх</button>
+          <p class="form-message" id="formMessage" aria-live="polite"></p>
+
+          <div class="divider"><span>эсвэл</span></div>
+          <button class="secondary-auth" id="googleButton" type="button">G <span>Google-ээр үргэлжлүүлэх</span></button>
+
+          <button class="text-button" type="button" id="toggleAuth">
+            Шинэ хэрэглэгч үү? <b>Бүртгүүлэх</b>
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>
