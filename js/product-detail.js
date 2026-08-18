@@ -142,6 +142,8 @@ document.querySelector(".option a").onclick = event => {
 
 // Сонгосон бодит variant-ийг cart_items хүснэгтэд хадгална.
 document.querySelector("#addToCart").onclick = async event => {
+  // Async үйлдлийн дараа event.currentTarget null болдог тул товчийг урьдчилан хадгална.
+  const addButton = event.currentTarget;
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     location.href = "login.html";
@@ -157,14 +159,14 @@ document.querySelector("#addToCart").onclick = async event => {
   }
 
   try {
-    event.currentTarget.disabled = true;
+    addButton.disabled = true;
     await addVariantToCart(user.id, selectedVariant.id, quantity);
     await loadCartCount();
-    event.currentTarget.textContent = "Сагсанд нэмэгдлээ ✓";
+    addButton.textContent = "Сагсанд нэмэгдлээ ✓";
   } catch (error) {
     alert(`Сагсанд нэмэхэд алдаа гарлаа: ${error.message}`);
   } finally {
-    event.currentTarget.disabled = false;
+    addButton.disabled = false;
   }
 };
 

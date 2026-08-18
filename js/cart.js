@@ -30,7 +30,10 @@ function renderCart() {
         const image = productImage(product);
         return `<div class="cart-row">
           <div class="cart-product">
-            <span class="cart-thumb" ${image ? `style="background-image:url('${image}')"` : ""}></span>
+            <span
+              class="cart-thumb ${image ? "has-photo" : ""}"
+              ${image ? `style="background-image:url('${image}')"` : ""}
+            ></span>
             <div>
               <b>${product?.name || "Устсан бараа"}</b>
               <p>Өнгө: ${variant?.color || "-"} · Размер: ${variant?.size || "-"}</p>
