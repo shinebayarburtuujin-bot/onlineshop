@@ -138,6 +138,9 @@ for all to authenticated using (user_id = auth.uid()) with check (user_id = auth
 -- Browser ашиглах role-уудад шаардлагатай хүснэгтийн эрхүүдийг олгоно.
 grant select on public.categories, public.products, public.product_images,
   public.product_variants, public.reviews to anon, authenticated;
+-- Нэвтэрсэн хэрэглэгч өөрийн profile, cart болон order мөрүүдийг RLS-ийн хүрээнд уншина.
+grant select on public.profiles, public.cart_items, public.orders,
+  public.order_items to authenticated;
 grant insert, update, delete on public.profiles, public.cart_items, public.orders,
   public.order_items, public.reviews to authenticated;
 grant insert, update, delete on public.categories, public.products,
