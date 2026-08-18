@@ -10,3 +10,12 @@
 .product-form-message.visible{display:block;background:#f7e3dc;color:var(--sale)}
 .product-form-message.success{display:block;background:#e5ecdf;color:var(--sage-dark)}
 #saveProductButton:disabled{opacity:.65;cursor:wait}
+
+/* Размер бүрийг сонгож, хажууд нь тусдаа үлдэгдэл оруулах хүснэгт. */
+.size-stock-fieldset{border:1px solid var(--line);padding:15px;margin:0}
+.size-stock-fieldset legend{font-size:12px;font-weight:700;padding:0 6px}
+.size-stock-fieldset>p{margin:0 0 12px;color:var(--muted);font-size:11px}
+.size-stock-list{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.size-stock-list label{display:grid;grid-template-columns:auto 28px 1fr;align-items:center;gap:6px;border:1px solid var(--line);padding:7px!important}
+.size-stock-list .size-stock{width:100%;padding:7px;text-align:center}
+@media(max-width:550px){.size-stock-list{grid-template-columns:repeat(2,1fr)}}

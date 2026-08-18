@@ -231,20 +231,22 @@
           <input id="adminMaterial" type="text">
         </label>
 
-        <!-- Барааг сагсанд нэмэхэд хэрэгтэй үндсэн хувилбар. -->
-        <div class="modal-grid">
-          <label>
-            Размерууд
-            <input
-              id="adminSize"
-              type="text"
-              value="M"
-              placeholder="Жишээ: S, M, L, XL"
-              required
-            >
-            <small>Размер бүрийг таслал эсвэл зайгаар тусгаарлана.</small>
-          </label>
+        <!-- Барааны бүх размер болон размер тус бүрийн үлдэгдэл. -->
+        <fieldset class="size-stock-fieldset">
+          <legend>Размер ба үлдэгдэл</legend>
+          <p>Борлуулах размерыг сонгоод тус бүрийн ширхэгийг оруулна.</p>
 
+          <div class="size-stock-list">
+            <label><input class="size-enabled" type="checkbox" value="XS"> XS <input class="size-stock" type="number" min="0" value="0" aria-label="XS үлдэгдэл"></label>
+            <label><input class="size-enabled" type="checkbox" value="S"> S <input class="size-stock" type="number" min="0" value="0" aria-label="S үлдэгдэл"></label>
+            <label><input class="size-enabled" type="checkbox" value="M" checked> M <input class="size-stock" type="number" min="0" value="1" aria-label="M үлдэгдэл"></label>
+            <label><input class="size-enabled" type="checkbox" value="L"> L <input class="size-stock" type="number" min="0" value="0" aria-label="L үлдэгдэл"></label>
+            <label><input class="size-enabled" type="checkbox" value="XL"> XL <input class="size-stock" type="number" min="0" value="0" aria-label="XL үлдэгдэл"></label>
+            <label><input class="size-enabled" type="checkbox" value="XXL"> XXL <input class="size-stock" type="number" min="0" value="0" aria-label="XXL үлдэгдэл"></label>
+          </div>
+        </fieldset>
+
+        <div class="modal-grid">
           <label>
             Өнгөний нэр
             <input id="adminColor" type="text" value="Sage green" required>
@@ -253,11 +255,6 @@
           <label>
             Өнгөний код
             <input id="adminColorCode" type="color" value="#66735a">
-          </label>
-
-          <label>
-            Үлдэгдэл
-            <input id="adminStock" type="number" min="0" value="1" required>
           </label>
         </div>
 

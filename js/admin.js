@@ -212,16 +212,14 @@ document.querySelector("#productForm").onsubmit = async event => {
   }
 };
 
-// "S, M, L XL" гэж бичсэн утгыг ["S", "M", "L", "XL"] болгон салгана.
-// Set ашигласнаар ижил размерыг хоёр удаа бичсэн үед давхар variant үүсэхгүй.
+// Сонгосон размер бүрийн нэр болон тусад нь оруулсан үлдэгдлийг уншина.
 function getEnteredSizes() {
-  const sizeText = document.querySelector("#adminSize").value;
-  return [...new Set(
-    sizeText
-      .split(/[\s,]+/)
-      .map(size => size.trim().toUpperCase())
-      .filter(Boolean)
-  )];
+  return [...document.querySelectorAll(".size-stock-list label")]
+    .filter(row => row.querySelector(".size-enabled").checked)
+    .map(row => ({
+      size: row.querySelector(".size-enabled").value,
+      stock: Number(row.querySelector(".size-stock").value)
+    }));
 }
 
 // Size бүрийг product_variants хүснэгтэд бие даасан мөр болгон хадгална.
@@ -231,12 +229,11 @@ async function saveProductVariants(productId) {
 
   const color = document.querySelector("#adminColor").value.trim();
   const colorCode = document.querySelector("#adminColorCode").value;
-  const stock = Number(document.querySelector("#adminStock").value);
   const existingVariants = products.find(product => product.id === productId)?.variants || [];
 
   // Өмнөх variant мөрүүдийг дарааллаар нь шинэ size-уудтай тааруулж update хийнэ.
   for (let index = 0; index < sizes.length; index += 1) {
-    const size = sizes[index];
+    const { size, stock } = sizes[index];
     const variantValue = {
       product_id: productId,
       size,
@@ -386,14 +383,20 @@ function openEditForm(product) {
   document.querySelector("#adminDiscountPrice").value = product.discount_price || "";
   document.querySelector("#adminDescription").value = product.description || "";
   document.querySelector("#adminMaterial").value = product.material || "";
-  document.querySelector("#adminSize").value = product.variants
-    ?.filter(item => item.stock > 0)
-    .map(item => item.size)
-    .filter(Boolean)
-    .join(", ") || variant.size || "M";
+  // Эхлээд бүх size сонголтыг цэвэрлээд database дахь variant-аар нөхнө.
+  document.querySelectorAll(".size-stock-list label").forEach(row => {
+    row.querySelector(".size-enabled").checked = false;
+    row.querySelector(".size-stock").value = 0;
+  });
+  product.variants?.forEach(item => {
+    const checkbox = [...document.querySelectorAll(".size-enabled")]
+      .find(input => input.value === item.size);
+    if (!checkbox) return;
+    checkbox.checked = item.stock > 0;
+    checkbox.closest("label").querySelector(".size-stock").value = item.stock;
+  });
   document.querySelector("#adminColor").value = variant.color || "Sage green";
   document.querySelector("#adminColorCode").value = variant.color_code || "#66735a";
-  document.querySelector("#adminStock").value = variant.stock ?? 1;
   document.querySelector("#adminProductActive").checked = product.is_active;
   currentImageUrl = productImage(product);
   selectedFile = null;
