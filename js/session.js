@@ -33,6 +33,23 @@ async function showCurrentUser() {
 
   const profileEmail = document.querySelector("#profileEmail");
   if (profileEmail) profileEmail.value = email;
+
+  // Нэвтэрсэн хэрэглэгчийн profiles мөрөөс эрхийг уншина.
+  // role нь "admin" үед л профайл дээрх админ удирдлагын холбоосыг харуулна.
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (profileError) {
+    console.error("Хэрэглэгчийн эрхийг уншихад алдаа гарлаа:", profileError.message);
+    return;
+  }
+
+  document.querySelectorAll("[data-admin-link]").forEach(adminLink => {
+    adminLink.hidden = profile?.role !== "admin";
+  });
 }
 
 document.querySelectorAll("[data-logout]").forEach((logoutButton) => {
