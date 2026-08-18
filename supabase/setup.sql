@@ -1,6 +1,11 @@
 -- NOMAD WEAR: Supabase-ийн бодит ажиллагаанд шаардлагатай RLS болон Storage тохиргоо.
 -- Энэ файлыг Supabase Dashboard → SQL Editor хэсэгт нэг удаа ажиллуулна.
 
+-- cart_items.id нь өөрийн primary key тул auth.users хүснэгттэй холбогдох ёсгүй.
+-- Table Editor-оор санамсаргүй үүсгэсэн буруу foreign key байвал устгана.
+alter table public.cart_items
+drop constraint if exists cart_items_id_fkey;
+
 -- Админ эсэхийг RLS recursion үүсгэхгүй шалгах хамгаалагдсан функц.
 create or replace function public.is_admin()
 returns boolean
