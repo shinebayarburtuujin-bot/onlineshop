@@ -250,11 +250,89 @@ document.querySelector("#adminProducts").onclick = async event => {
   const deleteId = event.target.dataset.delete;
   if (editId) openEditForm(products.find(product => product.id === editId));
   if (deleteId && confirm("Энэ барааг Supabase-аас устгах уу?")) {
-    const { error } = await supabase.from("products").delete().eq("id", deleteId);
-    if (error) showMessage(`Устгахад алдаа гарлаа: ${error.message}`);
-    else await loadAdminData();
+    await deleteProduct(deleteId);
   }
 };
+
+// Product нь variant болон зурагтай foreign key холбоотой учраас хүүхэд мөрүүдийг эхэлж устгана.
+// Ингэснээр product_variants_product_id_fkey constraint-ийн алдаа гарахгүй.
+async function deleteProduct(productId) {
+  showMessage("Барааны холбоотой мэдээллийг шалгаж байна...");
+
+  try {
+    // Устгах барааны бүх variant ID-г эхлээд авна.
+    const { data: variants, error: variantReadError } = await supabase
+      .from("product_variants")
+      .select("id")
+      .eq("product_id", productId);
+    if (variantReadError) throw variantReadError;
+
+    const variantIds = (variants || []).map(variant => variant.id);
+
+    // Variant сагсанд байгаа бол тэдгээр түр сагсны мөрүүдийг эхэлж цэвэрлэнэ.
+    if (variantIds.length) {
+      const { error: cartError } = await supabase
+        .from("cart_items")
+        .delete()
+        .in("variant_id", variantIds);
+      if (cartError) throw cartError;
+
+      // Захиалгын түүх тухайн variant-ийг ашигласан эсэхийг шалгана.
+      const { data: orderedItems, error: orderCheckError } = await supabase
+        .from("order_items")
+        .select("id")
+        .in("variant_id", variantIds)
+        .limit(1);
+      if (orderCheckError) throw orderCheckError;
+
+      // Түүхтэй барааг устгавал өмнөх захиалга эвдрэх тул зөвхөн каталогоос нууна.
+      if (orderedItems?.length) {
+        const { error: hideError } = await supabase
+          .from("products")
+          .update({ is_active: false })
+          .eq("id", productId);
+        if (hideError) throw hideError;
+
+        await loadAdminData();
+        showMessage("Энэ бараа захиалгын түүхтэй тул устгаагүй, каталогоос нуусан.");
+        return;
+      }
+    }
+
+    // Product ID-тай холбоотой зураг болон review мөрүүдийг цэвэрлэнэ.
+    const { error: imageError } = await supabase
+      .from("product_images")
+      .delete()
+      .eq("product_id", productId);
+    if (imageError) throw imageError;
+
+    const { error: reviewError } = await supabase
+      .from("reviews")
+      .delete()
+      .eq("product_id", productId);
+    if (reviewError) throw reviewError;
+
+    // Хамааралгүй болсон variant мөрүүдийг устгана.
+    const { error: variantDeleteError } = await supabase
+      .from("product_variants")
+      .delete()
+      .eq("product_id", productId);
+    if (variantDeleteError) throw variantDeleteError;
+
+    // Эцэст нь үндсэн products мөрийг устгана.
+    const { error: productError } = await supabase
+      .from("products")
+      .delete()
+      .eq("id", productId);
+    if (productError) throw productError;
+
+    await loadAdminData();
+    showMessage("Бараа болон холбоотой мэдээлэл амжилттай устгагдлаа.");
+  } catch (error) {
+    showMessage(`Устгахад алдаа гарлаа: ${error.message}`);
+    console.error("Бараа устгах алдаа:", error);
+  }
+}
 
 function openEditForm(product) {
   const variant = product.variants?.[0] || {};
