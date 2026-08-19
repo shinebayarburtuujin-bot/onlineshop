@@ -20,3 +20,6 @@
 .size-stock-list label{display:grid;grid-template-columns:auto 28px 1fr;align-items:center;gap:6px;border:1px solid var(--line);padding:7px!important}
 .size-stock-list .size-stock{width:100%;padding:7px;text-align:center}
 @media(max-width:550px){.size-stock-list{grid-template-columns:repeat(2,1fr)}}
+
+/* Нэг бараанд нэмэх өнгө бүрийг тусдаа variant бүлэг болгон ялгана. */
+.color-variant-group{display:grid;gap:14px;border:1px solid var(--line);padding:15px;margin:0}.color-variant-group .size-stock-fieldset{border:0;padding:0}.additional-color-group{margin-top:14px;position:relative}.additional-color-head{display:flex;align-items:center;justify-content:space-between}.additional-color-head b{font-size:13px}.remove-color-button{border:0;background:transparent;color:var(--sale);cursor:pointer}.add-color-button{border:1px dashed var(--sage);background:#f1f4ed;color:var(--sage-dark);padding:12px;cursor:pointer}

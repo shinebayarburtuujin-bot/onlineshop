@@ -145,6 +145,7 @@ function showImagePreview(url) {
 
 document.querySelector("#openProductForm").onclick = () => {
   document.querySelector("#productForm").reset();
+  document.querySelector("#additionalColors").innerHTML = "";
   document.querySelector("#editProductId").value = "";
   document.querySelector("#productFormTitle").textContent = "Шинэ бараа";
   selectedFile = null;
@@ -190,13 +191,26 @@ document.querySelector("#productForm").onsubmit = async event => {
     await saveProductVariants(savedProduct.id);
 
     saveStep = "барааны зураг";
-    if (selectedFile) await uploadProductImage(savedProduct.id, selectedFile);
+    const primaryColor = document.querySelector("[data-primary-color] .variant-color").value.trim();
+    if (selectedFile) await uploadProductImage(savedProduct.id, selectedFile, primaryColor, true);
     else if (!currentImageUrl && id) {
       const { error: imageDeleteError } = await supabase
         .from("product_images")
         .delete()
         .eq("product_id", savedProduct.id);
       if (imageDeleteError) throw imageDeleteError;
+    }
+
+    // Нэмэлт өнгө бүрд сонгосон зургийг тухайн өнгийн нэртэй холбон хадгална.
+    for (const group of document.querySelectorAll(".additional-color-group")) {
+      const file = group.querySelector(".variant-image")?.files[0];
+      if (!file) continue;
+      await uploadProductImage(
+        savedProduct.id,
+        file,
+        group.querySelector(".variant-color").value.trim(),
+        false
+      );
     }
 
     showProductFormMessage("Бараа амжилттай хадгалагдлаа.", true);
@@ -214,17 +228,17 @@ document.querySelector("#productForm").onsubmit = async event => {
   }
 };
 
-// Сонгосон размер бүрийн нэр болон тусад нь оруулсан үлдэгдлийг уншина.
-function getEnteredSizes() {
+// Нэг өнгөний бүлгээс сонгосон размер болон үлдэгдлүүдийг уншина.
+function getEnteredSizes(group) {
   // Размергүй бараанд cart-д ашиглах нэг variant-ийг One Size техникийн утгаар үүсгэнэ.
-  if (document.querySelector("#adminNoSize").checked) {
+  if (group.querySelector(".variant-no-size").checked) {
     return [{
       size: "One Size",
-      stock: Number(document.querySelector("#adminNoSizeStock").value)
+      stock: Number(group.querySelector(".variant-no-size-stock").value)
     }];
   }
 
-  return [...document.querySelectorAll(".size-stock-list label")]
+  return [...group.querySelectorAll(".size-stock-list label")]
     .filter(row => row.querySelector(".size-enabled").checked)
     .map(row => ({
       size: row.querySelector(".size-enabled").value,
@@ -232,19 +246,16 @@ function getEnteredSizes() {
     }));
 }
 
-// Size бүрийг product_variants хүснэгтэд бие даасан мөр болгон хадгална.
-async function saveProductVariants(productId) {
-  const sizes = getEnteredSizes();
-  if (!sizes.length) throw new Error("Размер сонгох эсвэл ‘Размергүй бараа’-г идэвхжүүлнэ үү.");
+// Формд байгаа бүх өнгө болон өнгө тус бүрийн size-ийг variant жагсаалт болгоно.
+function getEnteredVariants(productId) {
+  return [...document.querySelectorAll(".color-variant-group")].flatMap(group => {
+    const color = group.querySelector(".variant-color").value.trim();
+    const colorCode = group.querySelector(".variant-color-code").value;
+    const sizes = getEnteredSizes(group);
+    if (!color) throw new Error("Өнгө бүрийн нэрийг оруулна уу.");
+    if (!sizes.length) throw new Error(`${color} өнгөнд размер сонгох эсвэл ‘Размергүй бараа’-г идэвхжүүлнэ үү.`);
 
-  const color = document.querySelector("#adminColor").value.trim();
-  const colorCode = document.querySelector("#adminColorCode").value;
-  const existingVariants = products.find(product => product.id === productId)?.variants || [];
-
-  // Өмнөх variant мөрүүдийг дарааллаар нь шинэ size-уудтай тааруулж update хийнэ.
-  for (let index = 0; index < sizes.length; index += 1) {
-    const { size, stock } = sizes[index];
-    const variantValue = {
+    return sizes.map(({ size, stock }) => ({
       product_id: productId,
       size,
       color,
@@ -253,18 +264,35 @@ async function saveProductVariants(productId) {
       sku: `${productId}-${size === "One Size" ? "no-size" : size}-${color}`
         .toLowerCase()
         .replace(/[^a-z0-9-]+/g, "-")
-    };
+    }));
+  });
+}
 
-    const existingVariant = existingVariants[index];
+// Өнгө-size бүрийг product_variants хүснэгтэд бие даасан мөр болгон хадгална.
+async function saveProductVariants(productId) {
+  const enteredVariants = getEnteredVariants(productId);
+  const existingVariants = products.find(product => product.id === productId)?.variants || [];
+  const usedVariantIds = new Set();
+
+  // Өмнөх variant-ийг ижил өнгө болон size-аар нь олж update хийнэ, байхгүй бол шинээр үүсгэнэ.
+  for (const variantValue of enteredVariants) {
+    const existingVariant = existingVariants.find(variant =>
+      !usedVariantIds.has(variant.id)
+      && variant.color === variantValue.color
+      && variant.size === variantValue.size
+    );
     const request = existingVariant
       ? supabase.from("product_variants").update(variantValue).eq("id", existingVariant.id)
       : supabase.from("product_variants").insert(variantValue);
     const { error } = await request;
     if (error) throw error;
+    if (existingVariant) usedVariantIds.add(existingVariant.id);
   }
 
-  // Хасагдсан хуучин размер захиалгын түүхтэй байж болох тул устгахгүй, stock-ийг 0 болгоно.
-  const unusedVariantIds = existingVariants.slice(sizes.length).map(variant => variant.id);
+  // Формоос хассан хуучин өнгө/размер захиалгын түүхтэй байж болох тул устгахгүй, stock-ийг 0 болгоно.
+  const unusedVariantIds = existingVariants
+    .filter(variant => !usedVariantIds.has(variant.id))
+    .map(variant => variant.id);
   if (unusedVariantIds.length) {
     const { error } = await supabase
       .from("product_variants")
@@ -275,7 +303,7 @@ async function saveProductVariants(productId) {
 }
 
 // Зургийг product-images bucket-д upload хийгээд URL-г product_images-д хадгална.
-async function uploadProductImage(productId, file) {
+async function uploadProductImage(productId, file, color = null, isPrimary = false) {
   const extension = file.name.split(".").pop().toLowerCase();
   const path = `${productId}/${crypto.randomUUID()}.${extension}`;
   const { error: uploadError } = await supabase.storage
@@ -284,12 +312,15 @@ async function uploadProductImage(productId, file) {
   if (uploadError) throw uploadError;
 
   const { data } = supabase.storage.from("product-images").getPublicUrl(path);
-  await supabase.from("product_images").update({ is_primary: false }).eq("product_id", productId);
+  if (isPrimary) {
+    await supabase.from("product_images").update({ is_primary: false }).eq("product_id", productId);
+  }
   const { error } = await supabase.from("product_images").insert({
     product_id: productId,
     image_url: data.publicUrl,
-    is_primary: true,
-    sort_order: 0
+    color,
+    is_primary: isPrimary,
+    sort_order: isPrimary ? 0 : 1
   });
   if (error) throw error;
 }
@@ -384,7 +415,17 @@ async function deleteProduct(productId) {
 }
 
 function openEditForm(product) {
-  const variant = product.variants?.[0] || {};
+  const activeVariants = (product.variants || []).filter(variant => variant.stock > 0);
+  const variantsForForm = activeVariants.length ? activeVariants : (product.variants || []).slice(0, 1);
+  const variantGroups = [...new Map(
+    variantsForForm.map(variant => [
+      `${variant.color || ""}|${variant.color_code || ""}`,
+      variantsForForm.filter(item =>
+        item.color === variant.color && item.color_code === variant.color_code
+      )
+    ])
+  ).values()];
+  const primaryVariants = variantGroups[0] || [];
   document.querySelector("#editProductId").value = product.id;
   document.querySelector("#adminProductName").value = product.name;
   document.querySelector("#adminCategory").value = product.category_id || "";
@@ -393,25 +434,9 @@ function openEditForm(product) {
   document.querySelector("#adminDiscountPrice").value = product.discount_price || "";
   document.querySelector("#adminDescription").value = product.description || "";
   document.querySelector("#adminMaterial").value = product.material || "";
-  // Эхлээд бүх size сонголтыг цэвэрлээд database дахь variant-аар нөхнө.
-  document.querySelectorAll(".size-stock-list label").forEach(row => {
-    row.querySelector(".size-enabled").checked = false;
-    row.querySelector(".size-stock").value = 0;
-  });
-  product.variants?.forEach(item => {
-    const checkbox = [...document.querySelectorAll(".size-enabled")]
-      .find(input => input.value === item.size);
-    if (!checkbox) return;
-    checkbox.checked = item.stock > 0;
-    checkbox.closest("label").querySelector(".size-stock").value = item.stock;
-  });
-  // One Size (эсвэл хуучин null) variant бол размергүйгээр хадгалсан бараа юм.
-  const noSizeVariant = product.variants?.find(item => !item.size || item.size === "One Size");
-  document.querySelector("#adminNoSize").checked = Boolean(noSizeVariant);
-  document.querySelector("#adminNoSizeStock").value = noSizeVariant?.stock ?? 1;
-  setNoSizeMode(Boolean(noSizeVariant));
-  document.querySelector("#adminColor").value = variant.color || "Sage green";
-  document.querySelector("#adminColorCode").value = variant.color_code || "#66735a";
+  document.querySelector("#additionalColors").innerHTML = "";
+  fillColorGroup(document.querySelector("[data-primary-color]"), primaryVariants);
+  variantGroups.slice(1).forEach(variants => addColorGroup(variants));
   document.querySelector("#adminProductActive").checked = product.is_active;
   currentImageUrl = productImage(product);
   selectedFile = null;
@@ -422,12 +447,67 @@ function openEditForm(product) {
 }
 
 // Размергүй горимд size сонголтуудыг хааж, нийт үлдэгдлийн талбарыг харуулна.
-function setNoSizeMode(enabled) {
-  document.querySelector(".size-stock-list").classList.toggle("disabled", enabled);
-  document.querySelector("#noSizeStockRow").classList.toggle("hidden", !enabled);
-  document.querySelectorAll(".size-enabled, .size-stock").forEach(input => {
+function setNoSizeMode(enabled, group = document.querySelector("[data-primary-color]")) {
+  group.querySelector(".size-stock-list").classList.toggle("disabled", enabled);
+  group.querySelector(".no-size-stock").classList.toggle("hidden", !enabled);
+  group.querySelectorAll(".size-enabled, .size-stock").forEach(input => {
     input.disabled = enabled;
   });
+}
+
+// Database-аас ирсэн нэг өнгийн variant-уудыг тухайн формын бүлэгт байрлуулна.
+function fillColorGroup(group, variants = []) {
+  const first = variants[0] || {};
+  group.querySelector(".variant-color").value = first.color || "Sage green";
+  group.querySelector(".variant-color-code").value = first.color_code || "#66735a";
+  group.querySelectorAll(".size-stock-list label").forEach(row => {
+    const size = row.querySelector(".size-enabled").value;
+    const variant = variants.find(item => item.size === size);
+    row.querySelector(".size-enabled").checked = Boolean(variant && variant.stock > 0);
+    row.querySelector(".size-stock").value = variant?.stock ?? 0;
+  });
+  const noSizeVariant = variants.find(item => !item.size || item.size === "One Size");
+  group.querySelector(".variant-no-size").checked = Boolean(noSizeVariant);
+  group.querySelector(".variant-no-size-stock").value = noSizeVariant?.stock ?? 1;
+  setNoSizeMode(Boolean(noSizeVariant), group);
+}
+
+// Нэмэлт өнгөний нэр, код, size болон үлдэгдлийн формыг үүсгэнэ.
+function addColorGroup(variants = []) {
+  const container = document.querySelector("#additionalColors");
+  container.insertAdjacentHTML("beforeend", `
+    <section class="color-variant-group additional-color-group">
+      <div class="additional-color-head">
+        <b>Нэмэлт өнгө</b>
+        <button class="remove-color-button" type="button">Өнгө хасах</button>
+      </div>
+      <div class="modal-grid">
+        <label>Өнгөний нэр<input class="variant-color" type="text" required></label>
+        <label>Өнгөний код<input class="variant-color-code" type="color" value="#66735a"></label>
+      </div>
+      <label>
+        Энэ өнгийн зураг (сонголттой)
+        <input class="variant-image" type="file" accept="image/png,image/jpeg,image/webp">
+      </label>
+      <fieldset class="size-stock-fieldset">
+        <label class="no-size-option">
+          <input class="variant-no-size" type="checkbox"> Размергүй бараа
+        </label>
+        <label class="no-size-stock hidden">
+          Нийт үлдэгдэл<input class="variant-no-size-stock" type="number" min="0" value="1">
+        </label>
+        <div class="size-stock-list">
+          ${["XS", "S", "M", "L", "XL", "XXL"].map(size => `
+            <label>
+              <input class="size-enabled" type="checkbox" value="${size}"> ${size}
+              <input class="size-stock" type="number" min="0" value="0" aria-label="${size} үлдэгдэл">
+            </label>
+          `).join("")}
+        </div>
+      </fieldset>
+    </section>
+  `);
+  fillColorGroup(container.lastElementChild, variants);
 }
 
 // Accessories сонгогдоход размергүй горимыг автоматаар асаана, хэрэглэгч өөрөө сольж болно.
@@ -439,8 +519,21 @@ function applyCategorySizeMode() {
   setNoSizeMode(noSize);
 }
 
-document.querySelector("#adminNoSize").onchange = event => {
-  setNoSizeMode(event.target.checked);
+document.querySelector("#addColorButton").onclick = () => addColorGroup();
+
+document.querySelector("#productForm").addEventListener("change", event => {
+  if (event.target.matches(".variant-no-size")) {
+    setNoSizeMode(event.target.checked, event.target.closest(".color-variant-group"));
+  }
+  if (event.target.matches(".variant-image") && event.target.files[0]?.size > 2 * 1024 * 1024) {
+    alert("Өнгөний зураг 2MB-аас бага байх шаардлагатай.");
+    event.target.value = "";
+  }
+});
+
+document.querySelector("#additionalColors").onclick = event => {
+  const removeButton = event.target.closest(".remove-color-button");
+  if (removeButton) removeButton.closest(".color-variant-group").remove();
 };
 
 document.querySelector("#adminCategory").onchange = applyCategorySizeMode;

@@ -231,19 +231,20 @@
           <input id="adminMaterial" type="text">
         </label>
 
-        <!-- Барааны бүх размер болон размер тус бүрийн үлдэгдэл. -->
+        <!-- Үндсэн өнгө, тухайн өнгийн размер болон үлдэгдэл. -->
+        <section class="color-variant-group" data-primary-color>
         <fieldset class="size-stock-fieldset">
           <legend>Размер ба үлдэгдэл</legend>
           <p>Борлуулах размерыг сонгоод тус бүрийн ширхэгийг оруулна.</p>
 
           <label class="no-size-option">
-            <input id="adminNoSize" type="checkbox">
+            <input class="variant-no-size" id="adminNoSize" type="checkbox">
             Размергүй бараа (Accessories зэрэг бараанд)
           </label>
 
           <label class="no-size-stock hidden" id="noSizeStockRow">
             Нийт үлдэгдэл
-            <input id="adminNoSizeStock" type="number" min="0" value="1">
+            <input class="variant-no-size-stock" id="adminNoSizeStock" type="number" min="0" value="1">
           </label>
 
           <div class="size-stock-list">
@@ -259,14 +260,22 @@
         <div class="modal-grid">
           <label>
             Өнгөний нэр
-            <input id="adminColor" type="text" value="Sage green" required>
+            <input class="variant-color" id="adminColor" type="text" value="Sage green" required>
           </label>
 
           <label>
             Өнгөний код
-            <input id="adminColorCode" type="color" value="#66735a">
+            <input class="variant-color-code" id="adminColorCode" type="color" value="#66735a">
           </label>
         </div>
+        </section>
+
+        <!-- Нэмэлт өнгөнүүдийг JavaScript энэ хэсэгт үүсгэнэ. -->
+        <div id="additionalColors"></div>
+
+        <button class="add-color-button" id="addColorButton" type="button">
+          + Өнгө нэмэх
+        </button>
 
         <label class="check-row">
           <input id="adminProductActive" type="checkbox" checked>

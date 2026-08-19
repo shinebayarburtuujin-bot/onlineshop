@@ -39,8 +39,16 @@ function renderProduct() {
   document.querySelector("#productPrice").textContent = money(salePrice(product));
   document.querySelector(".description").textContent = product.description || "Тайлбар оруулаагүй байна.";
 
-  const images = product.images || [];
-  const mainImage = productImage(product);
+  renderGallery();
+  renderVariants();
+}
+
+// Сонгосон өнгөтэй холбогдсон зургуудыг gallery-д харуулна.
+function renderGallery() {
+  const allImages = product.images || [];
+  const colorImages = allImages.filter(image => image.color === selectedVariant?.color);
+  const images = colorImages.length ? colorImages : allImages;
+  const mainImage = productImage(product, selectedVariant?.color);
   const detailImage = document.querySelector(".detail-image");
   if (mainImage) {
     detailImage.style.backgroundImage = `url('${mainImage}')`;
@@ -60,18 +68,20 @@ function renderProduct() {
         ></button>`
       ).join("")
     : `<button class="selected" aria-label="Зураг байхгүй"></button>`;
-
-  renderVariants();
 }
 
 // Өнгө болон размерын сонголтыг product_variants хүснэгтээс үүсгэнэ.
 function renderVariants() {
   const variants = product.variants || [];
-  const colors = [...new Map(variants.map(variant => [variant.color, variant])).values()];
-  // Үлдэгдэлтэй variant бүрийн size-ийг тусдаа сонгох товч болгон харуулна.
+  const colors = [...new Map(
+    variants.filter(variant => variant.stock > 0).map(variant => [variant.color, variant])
+  ).values()];
+  // Зөвхөн сонгосон өнгөнд байгаа үлдэгдэлтэй size-үүдийг тусдаа товч болгон харуулна.
   const sizes = [...new Set(
     variants
-      .filter(variant => variant.stock > 0)
+      .filter(variant =>
+        variant.stock > 0 && variant.color === selectedVariant?.color
+      )
       .map(variant => variant.size)
       // Размергүй Accessories-ийн техникийн One Size утгыг сонголт болгон харуулахгүй.
       .filter(size => size && size !== "One Size")
@@ -103,11 +113,14 @@ function selectVariant(changes) {
   const wantedColor = changes.color || selectedVariant?.color;
   const wantedSize = changes.size || selectedVariant?.size;
   selectedVariant = product.variants?.find(variant =>
-    variant.color === wantedColor && variant.size === wantedSize
+    variant.stock > 0 && variant.color === wantedColor && variant.size === wantedSize
   ) || product.variants?.find(variant =>
-    changes.color ? variant.color === wantedColor : variant.size === wantedSize
+    variant.stock > 0 && (changes.color
+      ? variant.color === wantedColor
+      : variant.size === wantedSize)
   ) || selectedVariant;
   renderVariants();
+  renderGallery();
 }
 
 document.querySelector("#plus").onclick = () => {

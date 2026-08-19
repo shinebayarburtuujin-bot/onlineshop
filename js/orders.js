@@ -61,7 +61,7 @@ function renderOrders() {
         </header>
         <div class="order-products">
           ${(order.items || []).map(item => {
-            const image = productImage(item.variant?.product);
+            const image = productImage(item.variant?.product, item.color);
             return `<div class="order-product">
             <span
               class="order-thumb ${image ? "has-photo" : "sage"}"

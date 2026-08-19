@@ -101,8 +101,17 @@ export function money(value) {
 }
 
 // Product-ийн үндсэн зургийг олно.
-export function productImage(product) {
+export function productImage(product, color = "") {
   const images = product?.images || [];
+  // Өнгө дамжуулсан бол тухайн өнгийн үндсэн зураг эсвэл эхний зургийг сонгоно.
+  const colorImages = color
+    ? images.filter(image => image.color === color)
+    : [];
+  if (colorImages.length) {
+    return colorImages.find(image => image.is_primary)?.image_url
+      || colorImages[0]?.image_url
+      || "";
+  }
   return images.find(image => image.is_primary)?.image_url || images[0]?.image_url || "";
 }
 

@@ -27,7 +27,7 @@ function renderCart() {
         const variant = item.variant;
         const product = variant?.product;
         const price = salePrice(product);
-        const image = productImage(product);
+        const image = productImage(product, variant?.color);
         return `<div class="cart-row">
           <div class="cart-product">
             <span
