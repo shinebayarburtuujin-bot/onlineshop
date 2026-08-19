@@ -35,7 +35,12 @@ function filteredProducts() {
   const products = state.products.filter(product => {
     const categoryName = product.category?.name || "";
     const matchesCategory = state.category === "all" || categoryName === state.category;
-    const matchesGender = state.gender === "all" || product.gender === state.gender;
+    // Unisex хувцас нь эмэгтэй, эрэгтэй аль алинд тохирох тул хоёр цэсэнд хоёуланд нь харуулна.
+    const productGender = (product.gender || "").trim().toLowerCase();
+    const selectedGender = state.gender.toLowerCase();
+    const matchesGender = state.gender === "all"
+      || productGender === selectedGender
+      || productGender === "unisex";
     const matchesSearch = product.name.toLowerCase().includes(state.search);
     return matchesCategory && matchesGender && matchesSearch;
   });
