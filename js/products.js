@@ -13,6 +13,7 @@ const state = {
   products: [],
   category: "all",
   gender: "all",
+  collection: "all",
   search: "",
   sort: "featured"
 };
@@ -41,8 +42,11 @@ function filteredProducts() {
     const matchesGender = state.gender === "all"
       || productGender === selectedGender
       || productGender === "unisex";
+    // Хямдрал цэс сонгосон үед зөвхөн хямдарсан үнэ оруулсан барааг харуулна.
+    const matchesCollection = state.collection !== "sale"
+      || Number(product.discount_price) > 0;
     const matchesSearch = product.name.toLowerCase().includes(state.search);
-    return matchesCategory && matchesGender && matchesSearch;
+    return matchesCategory && matchesGender && matchesCollection && matchesSearch;
   });
 
   if (state.sort === "low") products.sort((a, b) => salePrice(a) - salePrice(b));
@@ -119,7 +123,7 @@ document.querySelectorAll("[data-nav-filter]").forEach(link => {
     const value = link.dataset.navFilter;
     state.category = "all";
     state.gender = ["Эмэгтэй", "Эрэгтэй"].includes(value) ? value : "all";
-    if (value === "sale") state.products.sort((a, b) => Number(Boolean(b.discount_price)) - Number(Boolean(a.discount_price)));
+    state.collection = value === "sale" ? "sale" : "all";
     if (value === "new") state.products.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     render();
   });
