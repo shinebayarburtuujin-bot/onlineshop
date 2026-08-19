@@ -42,15 +42,24 @@ function filteredProducts() {
     const matchesGender = state.gender === "all"
       || productGender === selectedGender
       || productGender === "unisex";
-    // Хямдрал цэс сонгосон үед зөвхөн хямдарсан үнэ оруулсан барааг харуулна.
-    const matchesCollection = state.collection !== "sale"
-      || Number(product.discount_price) > 0;
+    // Хямдрал дээр хямдарсан барааг, Шинэ дээр сүүлийн 30 хоногт нэмэгдсэнийг харуулна.
+    const createdAt = new Date(product.created_at);
+    const newProductLimit = new Date();
+    newProductLimit.setDate(newProductLimit.getDate() - 30);
+    const matchesCollection = state.collection === "sale"
+      ? Number(product.discount_price) > 0
+      : state.collection === "new"
+        ? !Number.isNaN(createdAt.getTime()) && createdAt >= newProductLimit
+        : true;
     const matchesSearch = product.name.toLowerCase().includes(state.search);
     return matchesCategory && matchesGender && matchesCollection && matchesSearch;
   });
 
   if (state.sort === "low") products.sort((a, b) => salePrice(a) - salePrice(b));
   if (state.sort === "high") products.sort((a, b) => salePrice(b) - salePrice(a));
+  if (state.collection === "new" && state.sort === "featured") {
+    products.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  }
   return products;
 }
 
@@ -123,8 +132,12 @@ document.querySelectorAll("[data-nav-filter]").forEach(link => {
     const value = link.dataset.navFilter;
     state.category = "all";
     state.gender = ["Эмэгтэй", "Эрэгтэй"].includes(value) ? value : "all";
-    state.collection = value === "sale" ? "sale" : "all";
-    if (value === "new") state.products.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    state.collection = ["sale", "new"].includes(value) ? value : "all";
+    state.sort = "featured";
+    document.querySelector("#sortSelect").value = "featured";
+    document.querySelectorAll("[data-nav-filter]").forEach(item =>
+      item.classList.toggle("active", item === link)
+    );
     render();
   });
 });
