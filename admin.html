@@ -236,6 +236,16 @@
           <legend>Размер ба үлдэгдэл</legend>
           <p>Борлуулах размерыг сонгоод тус бүрийн ширхэгийг оруулна.</p>
 
+          <label class="no-size-option">
+            <input id="adminNoSize" type="checkbox">
+            Размергүй бараа (Accessories зэрэг бараанд)
+          </label>
+
+          <label class="no-size-stock hidden" id="noSizeStockRow">
+            Нийт үлдэгдэл
+            <input id="adminNoSizeStock" type="number" min="0" value="1">
+          </label>
+
           <div class="size-stock-list">
             <label><input class="size-enabled" type="checkbox" value="XS"> XS <input class="size-stock" type="number" min="0" value="0" aria-label="XS үлдэгдэл"></label>
             <label><input class="size-enabled" type="checkbox" value="S"> S <input class="size-stock" type="number" min="0" value="0" aria-label="S үлдэгдэл"></label>

@@ -69,7 +69,7 @@ function renderOrders() {
             ></span>
             <div>
               <b>${item.product_name}</b>
-              <small>Өнгө: ${item.color || "-"} · Размер: ${item.size || "-"} · ${item.quantity}ш</small>
+              <small>Өнгө: ${item.color || "-"} · Размер: ${item.size === "One Size" ? "Размергүй" : item.size || "-"} · ${item.quantity}ш</small>
             </div>
           </div>`;
           }).join("")}

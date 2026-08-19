@@ -15,6 +15,7 @@
 .size-stock-fieldset{border:1px solid var(--line);padding:15px;margin:0}
 .size-stock-fieldset legend{font-size:12px;font-weight:700;padding:0 6px}
 .size-stock-fieldset>p{margin:0 0 12px;color:var(--muted);font-size:11px}
+.no-size-option{display:flex!important;align-items:center;gap:8px;margin-bottom:12px}.no-size-option input{margin:0}.no-size-stock{margin-bottom:12px}.no-size-stock input{max-width:150px}.no-size-stock.hidden{display:none}.size-stock-list.disabled{opacity:.45;pointer-events:none}
 .size-stock-list{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 .size-stock-list label{display:grid;grid-template-columns:auto 28px 1fr;align-items:center;gap:6px;border:1px solid var(--line);padding:7px!important}
 .size-stock-list .size-stock{width:100%;padding:7px;text-align:center}

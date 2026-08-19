@@ -151,6 +151,8 @@ document.querySelector("#openProductForm").onclick = () => {
   currentImageUrl = "";
   showImagePreview("");
   showProductFormMessage("");
+  // Анхны сонгогдсон category Accessories бол размергүй горимыг санал болгоно.
+  applyCategorySizeMode();
   dialog.showModal();
 };
 
@@ -214,6 +216,14 @@ document.querySelector("#productForm").onsubmit = async event => {
 
 // Сонгосон размер бүрийн нэр болон тусад нь оруулсан үлдэгдлийг уншина.
 function getEnteredSizes() {
+  // Размергүй бараанд cart-д ашиглах нэг variant-ийг One Size техникийн утгаар үүсгэнэ.
+  if (document.querySelector("#adminNoSize").checked) {
+    return [{
+      size: "One Size",
+      stock: Number(document.querySelector("#adminNoSizeStock").value)
+    }];
+  }
+
   return [...document.querySelectorAll(".size-stock-list label")]
     .filter(row => row.querySelector(".size-enabled").checked)
     .map(row => ({
@@ -225,7 +235,7 @@ function getEnteredSizes() {
 // Size бүрийг product_variants хүснэгтэд бие даасан мөр болгон хадгална.
 async function saveProductVariants(productId) {
   const sizes = getEnteredSizes();
-  if (!sizes.length) throw new Error("Хамгийн багадаа нэг размер оруулна уу.");
+  if (!sizes.length) throw new Error("Размер сонгох эсвэл ‘Размергүй бараа’-г идэвхжүүлнэ үү.");
 
   const color = document.querySelector("#adminColor").value.trim();
   const colorCode = document.querySelector("#adminColorCode").value;
@@ -240,7 +250,7 @@ async function saveProductVariants(productId) {
       color,
       color_code: colorCode,
       stock,
-      sku: `${productId}-${size}-${color}`
+      sku: `${productId}-${size === "One Size" ? "no-size" : size}-${color}`
         .toLowerCase()
         .replace(/[^a-z0-9-]+/g, "-")
     };
@@ -395,6 +405,11 @@ function openEditForm(product) {
     checkbox.checked = item.stock > 0;
     checkbox.closest("label").querySelector(".size-stock").value = item.stock;
   });
+  // One Size (эсвэл хуучин null) variant бол размергүйгээр хадгалсан бараа юм.
+  const noSizeVariant = product.variants?.find(item => !item.size || item.size === "One Size");
+  document.querySelector("#adminNoSize").checked = Boolean(noSizeVariant);
+  document.querySelector("#adminNoSizeStock").value = noSizeVariant?.stock ?? 1;
+  setNoSizeMode(Boolean(noSizeVariant));
   document.querySelector("#adminColor").value = variant.color || "Sage green";
   document.querySelector("#adminColorCode").value = variant.color_code || "#66735a";
   document.querySelector("#adminProductActive").checked = product.is_active;
@@ -405,6 +420,30 @@ function openEditForm(product) {
   document.querySelector("#productFormTitle").textContent = "Бараа засах";
   dialog.showModal();
 }
+
+// Размергүй горимд size сонголтуудыг хааж, нийт үлдэгдлийн талбарыг харуулна.
+function setNoSizeMode(enabled) {
+  document.querySelector(".size-stock-list").classList.toggle("disabled", enabled);
+  document.querySelector("#noSizeStockRow").classList.toggle("hidden", !enabled);
+  document.querySelectorAll(".size-enabled, .size-stock").forEach(input => {
+    input.disabled = enabled;
+  });
+}
+
+// Accessories сонгогдоход размергүй горимыг автоматаар асаана, хэрэглэгч өөрөө сольж болно.
+function applyCategorySizeMode() {
+  const categoryId = document.querySelector("#adminCategory").value;
+  const category = categories.find(item => item.id === categoryId);
+  const noSize = category?.name?.trim().toLowerCase() === "accessories";
+  document.querySelector("#adminNoSize").checked = noSize;
+  setNoSizeMode(noSize);
+}
+
+document.querySelector("#adminNoSize").onchange = event => {
+  setNoSizeMode(event.target.checked);
+};
+
+document.querySelector("#adminCategory").onchange = applyCategorySizeMode;
 
 // Modal дотор хадгалалтын мэдээллийг өнгөтэй, хэрэглэгчид шууд харагдахаар үзүүлнэ.
 function showProductFormMessage(text, success = false) {

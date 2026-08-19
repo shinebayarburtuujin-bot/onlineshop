@@ -73,7 +73,8 @@ function renderVariants() {
     variants
       .filter(variant => variant.stock > 0)
       .map(variant => variant.size)
-      .filter(Boolean)
+      // Размергүй Accessories-ийн техникийн One Size утгыг сонголт болгон харуулахгүй.
+      .filter(size => size && size !== "One Size")
   )];
 
   document.querySelector(".color-options").innerHTML = colors.map(variant =>
@@ -90,6 +91,9 @@ function renderVariants() {
       ${size}
     </button>`
   ).join("");
+
+  // Размергүй бараанд размерын хоосон хэсгийг бүхэлд нь нууна.
+  document.querySelector(".detail-sizes").closest(".option").hidden = sizes.length === 0;
 
   document.querySelector("#selectedColor").textContent = selectedVariant?.color || "Сонголтгүй";
 }

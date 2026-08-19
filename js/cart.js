@@ -36,7 +36,7 @@ function renderCart() {
             ></span>
             <div>
               <b>${product?.name || "Устсан бараа"}</b>
-              <p>Өнгө: ${variant?.color || "-"} · Размер: ${variant?.size || "-"}</p>
+              <p>Өнгө: ${variant?.color || "-"} · Размер: ${variant?.size === "One Size" ? "Размергүй" : variant?.size || "-"}</p>
               <button class="remove" data-remove="${item.id}">Устгах</button>
             </div>
           </div>
