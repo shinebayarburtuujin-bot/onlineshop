@@ -38,15 +38,6 @@ document.querySelector("#forgotPassword").onclick = async () => {
     : "Нууц үг сэргээх холбоос и-мэйл рүү илгээгдлээ.";
 };
 
-// Supabase Authentication-ийн Google provider ашиглан нэвтэрнэ.
-document.querySelector("#googleButton").onclick = async () => {
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: { redirectTo: `${location.origin}/index.html` }
-  });
-  if (error) message.textContent = error.message;
-};
-
 // Нэвтрэх болон бүртгүүлэх горимын хооронд шилжинэ.
 toggleButton.onclick = () => {
   isSignUpMode = !isSignUpMode;
